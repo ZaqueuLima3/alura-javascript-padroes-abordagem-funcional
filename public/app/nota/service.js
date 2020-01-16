@@ -1,7 +1,7 @@
 import { handleStatus } from "../utils/promisse-helpers.js";
 import { partialize, pipe } from "../utils/operators.js";
 
-const API = "http://localhost:3000/notas";
+const API = "http://localhost:3001/notas";
 
 const getItemsFromNotas = notas => notas.$flatMap(nota => nota.itens);
 
