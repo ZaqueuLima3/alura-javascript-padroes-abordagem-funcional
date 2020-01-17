@@ -1,13 +1,22 @@
-import { log } from "./utils/promisse-helpers.js";
+import { log, timeOutPromise, delay, retry } from "./utils/promisse-helpers.js";
 import "./utils/array-helpers.js";
 import { notasService as service } from "./nota/service.js";
-import { takeUntil } from "./utils/operators.js";
+import {
+  takeUntil,
+  debounceTime,
+  partialize,
+  pipe
+} from "./utils/operators.js";
 
-const operation = takeUntil(3, () =>
-  service
-    .sumItems("2143")
+const operations = pipe(
+  partialize(takeUntil, 3),
+  partialize(debounceTime, 500)
+);
+
+const action = operations(() =>
+  retry(3, 3000, () => timeOutPromise(200, service.sumItems("2143")))
     .then(console.log)
     .catch(console.log)
 );
 
-document.querySelector("#myButton").onclick = operation;
+document.querySelector("#myButton").onclick = action;
